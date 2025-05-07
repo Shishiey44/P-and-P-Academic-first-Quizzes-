@@ -1,0 +1,2494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P&P Academic Quizzes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #00796b;
+      --primary-dark: #004d40;
+      --primary-light: #b2dfdb;
+      --accent-color: #ffeb3b;
+      --text-dark: #004d4d;
+      --text-light: #ffffff;
+      --bg-color: #e0f7fa;
+      --card-bg: #ffffff;
+      --sidebar-width: 250px;
+      --transition: all 0.3s ease;
+      --selected-answer: #2196F3; /* Changed to solid blue */
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-color);
+      color: var(--text-dark);
+      transition: var(--transition);
+      overflow-x: hidden;
+    }
+    
+    /* Splash Screen */
+    .splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--primary-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      color: white;
+      animation: fadeOut 1.5s ease-in-out 2s forwards;
+    }
+    
+    .splash-screen h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 4rem;
+      margin-bottom: 10px;
+      animation: fadeIn 1s ease-in-out;
+    }
+    
+    .splash-screen h2 {
+      font-size: 1.5rem;
+      animation: fadeIn 1s ease-in-out 0.5s both;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; visibility: hidden; }
+    }
+    
+    /* Header Styles */
+    header {
+      background-color: var(--primary-color);
+      padding: 15px;
+      text-align: center;
+      color: var(--text-light);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 10;
+      transition: var(--transition);
+    }
+    
+    header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      color: var(--text-light);
+      margin: 0;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+    }
+    
+    header h2 {
+      color: var(--accent-color);
+      margin: 5px 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    
+    h3 {
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      font-size: 1.3rem;
+    }
+    
+    /* Sidebar Styles */
+    .sidebar {
+      position: fixed;
+      left: -250px;
+      top: 0;
+      width: var(--sidebar-width);
+      height: 100%;
+      background-color: var(--primary-dark);
+      color: var(--text-light);
+      padding: 20px;
+      transition: var(--transition);
+      z-index: 100;
+      overflow-y: auto;
+    }
+    
+    .sidebar.active {
+      left: 0;
+    }
+    
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .sidebar h3 {
+      color: var(--text-light);
+      margin: 0;
+    }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--text-light);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    .sidebar-menu {
+      list-style: none;
+    }
+    
+    .sidebar-menu li {
+      margin-bottom: 15px;
+    }
+    
+    .sidebar-menu a {
+      color: var(--text-light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      padding: 8px 0;
+      transition: var(--transition);
+    }
+    
+    .sidebar-menu a:hover {
+      color: var(--accent-color);
+      transform: translateX(5px);
+    }
+    
+    .sidebar-menu i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
+    
+    .contact-info {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.9rem;
+    }
+    
+    .contact-info p {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .contact-info i {
+      margin-right: 10px;
+      color: var(--accent-color);
+    }
+    
+    .donate-btn {
+      display: block;
+      background-color: var(--accent-color);
+      color: var(--text-dark);
+      text-align: center;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 15px;
+      font-weight: bold;
+      transition: var(--transition);
+    }
+    
+    .donate-btn:hover {
+      background-color: #ffd600;
+      transform: translateY(-2px);
+    }
+    
+    /* Main Content Styles */
+    .main-content {
+      transition: var(--transition);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    
+    .main-content.shifted {
+      margin-left: var(--sidebar-width);
+    }
+    
+    /* Menu Button */
+    .menu-btn {
+      position: fixed;
+      left: 20px;
+      top: 20px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      z-index: 50;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .menu-btn:hover {
+      background-color: var(--primary-dark);
+      transform: scale(1.1);
+    }
+    
+    /* Quiz Container Styles */
+    .quiz-container {
+      width: 90%;
+      max-width: 800px;
+      margin: 40px auto;
+      background-color: var(--card-bg);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.5s ease;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Button Styles */
+    .button {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 18px;
+      margin-top: 20px;
+      transition: var(--transition);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      display: inline-block;
+      text-align: center;
+    }
+    
+    .button:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+    }
+    
+    .button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+    }
+    
+    .button.secondary {
+      background-color: var(--primary-light);
+      color: var(--text-dark);
+    }
+    
+    .button.secondary:hover {
+      background-color: #80cbc4;
+    }
+    
+    /* Quiz Section Styles */
+    .quiz-section, .result-section {
+      display: none;
+    }
+    
+    .question {
+      font-size: 18px;
+      margin-bottom: 25px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      transition: var(--transition);
+      animation: slideIn 0.4s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    .question:hover {
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transform: translateY(-3px);
+    }
+    
+    .question h4 {
+      margin-bottom: 15px;
+      color: var(--primary-dark);
+    }
+    
+    .options {
+      margin-left: 15px;
+      margin-bottom: 10px;
+    }
+    
+    /* UPDATED OPTION STYLES FOR BLUE SELECTION */
+    .option {
+      margin: 15px 0;
+      position: relative;
+      padding-left: 35px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .option input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+    }
+    
+    .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 25px;
+      width: 25px;
+      background-color: #eee;
+      border-radius: 50%;
+      transition: var(--transition);
+      border: 2px solid #ddd;
+    }
+    
+    .option:hover .checkmark {
+      background-color: #ddd;
+    }
+    
+    .option input:checked ~ .checkmark {
+      background-color: var(--selected-answer);
+      border-color: var(--selected-answer);
+    }
+    
+    .option input:checked ~ label {
+      color: var(--selected-answer);
+      font-weight: 600;
+    }
+    
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+    
+    .option input:checked ~ .checkmark:after {
+      display: block;
+    }
+    
+    .option .checkmark:after {
+      top: 5px;
+      left: 5px;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: white;
+    }
+    
+    /* Result Styles */
+    .result {
+      font-size: 22px;
+      color: var(--primary-color);
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .answer-section {
+      display: none;
+      background-color: #f5f5f5;
+      padding: 25px;
+      border-radius: 8px;
+      margin-top: 30px;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    .show-answers-btn {
+      display: block;
+      margin: 20px auto;
+      background-color: var(--primary-light);
+      color: var(--text-dark);
+    }
+    
+    #next-round-btn {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+    
+    /* Progress Bar */
+    #progress-container {
+      width: 100%;
+      margin: 30px 0;
+      position: relative;
+    }
+    
+    #progress-text {
+      text-align: right;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: var(--text-dark);
+    }
+    
+    #progress-bar {
+      width: 100%;
+      height: 10px;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    
+    #progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+      width: 0;
+      transition: width 0.5s ease;
+      border-radius: 5px;
+    }
+    
+    /* Answer Review */
+    #correct-answers-list {
+      list-style: none;
+    }
+    
+    #correct-answers-list li {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #e0e0e0;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    #correct-answers-list li:last-child {
+      border-bottom: none;
+    }
+    
+    .correct {
+      color: #4CAF50;
+      font-weight: bold;
+    }
+    
+    .incorrect {
+      color: #F44336;
+      font-weight: bold;
+    }
+    
+    /* Final Score */
+    .final-score {
+      font-size: 24px;
+      text-align: center;
+      margin: 30px 0;
+      color: var(--primary-color);
+      animation: bounceIn 0.8s ease-out;
+    }
+    
+    @keyframes bounceIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.05); }
+      70% { transform: scale(0.95); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    
+    .final-score h3 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+    
+    .final-score p {
+      margin: 10px 0;
+    }
+    
+    /* Category Selection */
+    #category-selection {
+      text-align: center;
+    }
+    
+    .category-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    /* Coming Soon Subjects */
+    .coming-soon {
+      position: relative;
+      filter: blur(1px);
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    .coming-soon::after {
+      content: "\f023";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
+      color: var(--primary-color);
+      z-index: 1;
+    }
+    
+    /* Timer */
+    .timer {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 30px;
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      z-index: 50;
+    }
+    
+    /* Previous Button */
+    .prev-btn {
+      background-color: #607d8b;
+      margin-right: 10px;
+      width: auto;
+      padding: 12px 20px;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .main-content.shifted {
+        margin-left: 0;
+      }
+      
+      .sidebar {
+        width: 80%;
+        left: -80%;
+      }
+      
+      .sidebar.active {
+        left: 0;
+      }
+      
+      .quiz-container {
+        width: 95%;
+        padding: 20px;
+      }
+      
+      .question {
+        padding: 15px;
+      }
+      
+      .splash-screen h1 {
+        font-size: 3rem;
+      }
+      
+      .splash-screen h2 {
+        font-size: 1.2rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+      
+      h2 {
+        font-size: 1.1rem;
+      }
+      
+      .button {
+        padding: 10px 20px;
+        font-size: 16px;
+      }
+      
+      .question {
+        font-size: 16px;
+      }
+      
+      .splash-screen h1 {
+        font-size: 2.5rem;
+      }
+      
+      .splash-screen h2 {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Splash Screen -->
+  <div class="splash-screen">
+    <h1>P&P Academic First</h1>
+    <h2 style="color:yellow;">Quizzes</h2>
+  </div>
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h3>Quiz Menu</h3>
+      <button class="close-btn">&times;</button>
+    </div>
+    <ul class="sidebar-menu">
+    <li>Mathematical Literacy Quiz </li>
+      <li><a href="#" onclick="startQuiz('finance')"><i class="fas fa-coins"></i> Finance Quiz</a></li>
+      <li><a href="#" onclick="startQuiz('measurements')"><i class="fas fa-ruler-combined"></i> Measurements Quiz</a></li>
+      <li><a href="#" onclick="startQuiz('dataHandling')"><i class="fas fa-chart-bar"></i> Data Handling Quiz</a></li>
+      <li class="coming-soon"><a href="#" onclick="showComingSoon()"><i class="fas fa-lock"></i> Mathematics</a></li>
+      <li class="coming-soon"><a href="#" onclick="showComingSoon()"><i class="fas fa-lock"></i> Business Studies</a></li>
+      
+       <li class="coming-soon"><a href="#" onclick="showComingSoon()"><i class="fas fa-lock"></i> Geography</a></li>
+       
+       
+      <li class="coming-soon"><a href="#" onclick="showComingSoon()"><i class="fas fa-lock"></i> Agricultural Science</a></li>
+      <li class="coming-soon"><a href="#" onclick="showComingSoon()"><i class="fas fa-lock"></i> Tourism</a></li>
+      <li class="coming-soon"><a href="#" onclick="showComingSoon()"><i class="fas fa-lock"></i> Physical Science</a></li>
+      <li class="coming-soon"><a href="#" onclick="showComingSoon()"><i class="fas fa-lock"></i> Agricultural Management</a></li>
+      <li><a href="#" onclick="showInstructions()"><i class="fas fa-info-circle"></i> Instructions</a></li>
+      <li><a href="#" onclick="showAboutUs()"><i class="fas fa-users"></i> About Us</a></li>
+      <li><a href="#" onclick="showPrivacyPolicy()"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+      <li><a href="#" onclick="restartQuiz()"><i class="fas fa-redo"></i> Restart Quiz</a></li>
+    </ul>
+    
+    <div class="contact-info">
+      <h4>Contact Details</h4>
+      <p><i class="fas fa-envelope"></i> shishieynarrow@gmail.com</p>
+      <p><i class="fas fa-comment"></i> WhatsApp: 0713316977</p>
+      <p><i class="fas fa-phone"></i> Call: 0713316977</p>
+      <a href="#" class="donate-btn" onclick="showDonateInfo()">
+        <i class="fas fa-hand-holding-heart"></i> Donate: 0713316977
+      </a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Menu Button -->
+    <button class="menu-btn"><i class="fas fa-bars"></i></button>
+    
+    <!-- Timer Display -->
+    <div class="timer" id="timer">00:00</div>
+    
+    <header>
+      <h1>P&P Academic First </h1>
+      <h2>Quizzes</h2>
+     
+    </header>
+
+    <!-- Category Selection -->
+    <div id="category-selection" class="quiz-container">
+     <h2>Mathematical Literacy</h2>
+      <h3>Select Quiz Category</h3>
+      <div class="category-buttons">
+        <button class="button" onclick="startQuiz('finance')">
+          <i class="fas fa-coins"></i> Finance Quiz
+        </button>
+        <button class="button" onclick="startQuiz('measurements')">
+          <i class="fas fa-ruler-combined"></i> Measurements Quiz
+        </button>
+        <button class="button" onclick="startQuiz('dataHandling')">
+          <i class="fas fa-chart-bar"></i> Data Handling Quiz
+        </button>
+      </div>
+    </div>
+
+    <!-- Quiz Section -->
+    <div id="quiz-section" class="quiz-section quiz-container">
+      <h3>Round <span id="round-number">1</span></h3>
+      <div id="progress-container">
+        <div id="progress-text">Progress: <span id="progress-percent">0</span>%</div>
+        <div id="progress-bar">
+          <div id="progress-bar-fill"></div>
+        </div>
+      </div>
+      <div id="questions"></div>
+      <button class="button prev-btn" onclick="prevRound()" id="prev-btn">
+        <i class="fas fa-arrow-left"></i> Previous
+      </button>
+      <button class="button" onclick="submitQuiz()" id="submit-btn">
+        <i class="fas fa-paper-plane"></i> Submit Answers
+      </button>
+      <button class="button show-answers-btn" onclick="toggleAnswers()" id="show-answers-btn">
+        <i class="fas fa-eye"></i> View Corrections
+      </button>
+      <div class="result" id="result"></div>
+
+      <div class="answer-section" id="answers">
+        <h3><i class="fas fa-clipboard-check"></i> Answer Review:</h3>
+        <ul id="correct-answers-list"></ul>
+      </div>
+      
+      <div id="next-round-btn">
+        <button class="button" onclick="nextRound()" id="next-round-button">
+          <i class="fas fa-arrow-right"></i> Go to Next Round
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Elements for Sounds -->
+  <audio id="correctSound" src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3"></audio>
+  <audio id="wrongSound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3"></audio>
+  <audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3"></audio>
+  <audio id="completeSound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3"></audio>
+  <audio id="timerSound" src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3"></audio>
+
+  <script>
+    // Global variables
+    let currentTopic = '';
+    let currentRound = 1;
+    let currentQuestions = [];
+    let userAnswers = [];
+    let progress = 0;
+    const questionsPerRound = 5;
+    let timerInterval;
+    let seconds = 0;
+    let quizData; // Will be loaded from the JSON
+
+    // DOM Elements
+    const menuBtn = document.querySelector('.menu-btn');
+    const sidebar = document.querySelector('.sidebar');
+    const closeBtn = document.querySelector('.close-btn');
+    const mainContent = document.querySelector('.main-content');
+    const timerElement = document.getElementById('timer');
+    const splashScreen = document.querySelector('.splash-screen');
+    
+    // Audio Elements
+    const correctSound = document.getElementById('correctSound');
+    const wrongSound = document.getElementById('wrongSound');
+    const clickSound = document.getElementById('clickSound');
+    const completeSound = document.getElementById('completeSound');
+    const timerSound = document.getElementById('timerSound');
+    
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load saved progress if available
+      loadProgress();
+      
+      // Close splash screen after animation
+      setTimeout(() => {
+        splashScreen.style.display = 'none';
+      }, 3500);
+    });
+
+    // Quiz data (same as before, but moved here for clarity)
+    quizData = {
+      finance: [
+        // Your finance questions here (same as before)
+        // Round 1
+        { question: "If a loan of R10,000 charges 10% interest per year, what will the total amount payable after 3 years be?", 
+          options: ["A) R11,000", "B) R12,000", "C) R13,000", "D) R14,000"], 
+          answer: "C",
+          explanation: "Simple interest calculation: R10,000 × 10% × 3 = R3,000 interest. Total = R10,000 + R3,000 = R13,000" },
+        
+        { question: "A person earns R150 per day. How much will they earn in 5 days?", 
+          options: ["A) R650", "B) R700", "C) R750", "D) R800"], 
+          answer: "C",
+          explanation: "R150 per day × 5 days = R750" },
+        
+        { question: "If you save R500 per month, how much will you have saved after 6 months?", 
+          options: ["A) R2,000", "B) R2,500", "C) R3,000", "D) R3,500"], 
+          answer: "C",
+          explanation: "R500 × 6 months = R3,000" },
+        
+        { question: "Your electricity bill is R780. If you pay a penalty of 5% for late payment, how much extra will you pay?", 
+          options: ["A) R30", "B) R35", "C) R39", "D) R45"], 
+          answer: "C",
+          explanation: "5% of R780 = 0.05 × 780 = R39" },
+        
+        { question: "A jacket originally costs R900 but is now selling for R720. What percentage discount was given?", 
+          options: ["A) 10%", "B) 15%", "C) 20%", "D) 25%"], 
+          answer: "C",
+          explanation: "Discount = R900 - R720 = R180. Percentage = (180/900) × 100 = 20%" },
+        
+        // Rest of your finance questions...
+          // Round 1
+    { question: "If a loan of R10,000 charges 10% interest per year, what will the total amount payable after 3 years be?", 
+      options: ["A) R11,000", "B) R12,000", "C) R13,000", "D) R14,000"], 
+      answer: "C",
+      explanation: "Simple interest calculation: R10,000 × 10% × 3 = R3,000 interest. Total = R10,000 + R3,000 = R13,000" },
+    
+    { question: "A person earns R150 per day. How much will they earn in 5 days?", 
+      options: ["A) R650", "B) R700", "C) R750", "D) R800"], 
+      answer: "C",
+      explanation: "R150 per day × 5 days = R750" },
+    
+    { question: "If you save R500 per month, how much will you have saved after 6 months?", 
+      options: ["A) R2,000", "B) R2,500", "C) R3,000", "D) R3,500"], 
+      answer: "C",
+      explanation: "R500 × 6 months = R3,000" },
+    
+    { question: "Your electricity bill is R780. If you pay a penalty of 5% for late payment, how much extra will you pay?", 
+      options: ["A) R30", "B) R35", "C) R39", "D) R45"], 
+      answer: "C",
+      explanation: "5% of R780 = 0.05 × 780 = R39" },
+    
+    { question: "A jacket originally costs R900 but is now selling for R720. What percentage discount was given?", 
+      options: ["A) 10%", "B) 15%", "C) 20%", "D) 25%"], 
+      answer: "C",
+      explanation: "Discount = R900 - R720 = R180. Percentage = (180/900) × 100 = 20%" },
+    
+    // Round 2
+    { question: "An item is priced at R1200. A store offers 30% off. What is the discount amount?", 
+      options: ["A) R320", "B) R340", "C) R360", "D) R380"], 
+      answer: "C",
+      explanation: "30% of R1200 = 0.30 × 1200 = R360" },
+    
+    { question: "You invest R5,000 in a fixed deposit earning 8% per year. How much interest will you earn after 2 years?", 
+      options: ["A) R800", "B) R700", "C) R900", "D) R1,000"], 
+      answer: "A",
+      explanation: "Simple interest: R5,000 × 8% × 2 = R800" },
+    
+    { question: "You buy a shirt for R450 and a pair of shoes for R950. What is your total spending?", 
+      options: ["A) R1,300", "B) R1,400", "C) R1,500", "D) R1,600"], 
+      answer: "B",
+      explanation: "R450 + R950 = R1,400" },
+    
+    { question: "A monthly salary is R15,000. How much is earned in a year (without bonuses)?", 
+      options: ["A) R180,000", "B) R150,000", "C) R175,000", "D) R185,000"], 
+      answer: "A",
+      explanation: "R15,000 × 12 months = R180,000" },
+    
+    { question: "You borrow R2,000 and repay it with 10% interest. How much do you pay back in total?", 
+      options: ["A) R2,100", "B) R2,200", "C) R2,300", "D) R2,400"], 
+      answer: "B",
+      explanation: "10% of R2,000 = R200. Total repayment = R2,000 + R200 = R2,200" },
+      // Round 3
+     
+    { 
+      question: "If you earn R12,000 per month and your rent is R4,500, what percentage of your income goes to rent?", 
+      options: ["A) 30%", "B) 35%", "C) 37.5%", "D) 40%"], 
+      answer: "C",
+      explanation: "R4,500 ÷ R12,000 = 0.375 → 37.5%"
+    },
+    { 
+      question: "Your monthly transport costs are R1,200. If you switch to a cheaper option that costs R900, how much will you save in a year?", 
+      options: ["A) R2,400", "B) R3,600", "C) R4,200", "D) R4,800"], 
+      answer: "B",
+      explanation: "Monthly saving: R1,200 - R900 = R300. Yearly: R300 × 12 = R3,600"
+    },
+    { 
+      question: "You budget R2,000 for groceries each month but spend R2,300. What is your monthly overspending?", 
+      options: ["A) R200", "B) R250", "C) R300", "D) R350"], 
+      answer: "C",
+      explanation: "R2,300 spent - R2,000 budget = R300 overspending"
+    },
+    { 
+      question: "If you save 15% of your R18,000 salary each month, how much do you save in 3 months?", 
+      options: ["A) R7,200", "B) R7,800", "C) R8,100", "D) R8,400"], 
+      answer: "C",
+      explanation: "15% of R18,000 = R2,700 per month. 3 months: R2,700 × 3 = R8,100"
+    },
+    { 
+      question: "Your phone contract costs R599 per month. If you switch to a prepaid plan costing R300, how much will you save in 6 months?", 
+      options: ["A) R1,494", "B) R1,674", "C) R1,794", "D) R1,854"], 
+      answer: "C",
+      explanation: "Monthly saving: R599 - R300 = R299. 6 months: R299 × 6 = R1,794"
+    },
+
+    // Round 4 
+    { 
+      question: "You want to save R6,000 in a year. How much should you save each month?", 
+      options: ["A) R400", "B) R500", "C) R600", "D) R700"], 
+      answer: "B",
+      explanation: "R6,000 ÷ 12 months = R500 per month"
+    },
+    { 
+      question: "Your monthly income is R15,000. You spend 40% on fixed expenses, 30% on variable expenses, and save the rest. How much do you save?", 
+      options: ["A) R3,500", "B) R4,000", "C) R4,500", "D) R5,000"], 
+      answer: "C",
+      explanation: "100% - 40% - 30% = 30% saved. 30% of R15,000 = R4,500"
+    },
+    { 
+      question: "You allocate R3,600 annually for car maintenance. How much is this per month?", 
+      options: ["A) R250", "B) R300", "C) R350", "D) R400"], 
+      answer: "B",
+      explanation: "R3,600 ÷ 12 = R300 per month"
+    },
+    { 
+      question: "Your entertainment budget is R800 per month. After 3 months, how much have you spent on entertainment?", 
+      options: ["A) R2,200", "B) R2,400", "C) R2,600", "D) R2,800"], 
+      answer: "B",
+      explanation: "R800 × 3 = R2,400"
+    },
+    { 
+      question: "You earn R10,000 monthly and save 20%. Your expenses increase by R500. What's your new savings amount?", 
+      options: ["A) R1,000", "B) R1,500", "C) R2,000", "D) R2,500"], 
+      answer: "B",
+      explanation: "Original savings: 20% of R10,000 = R2,000. New savings: R2,000 - R500 = R1,500"
+    },
+
+    // Round 5 
+    { 
+      question: "You take a loan of R5,000 at 12% interest for 2 years. What's the total interest?", 
+      options: ["A) R1,000", "B) R1,200", "C) R1,400", "D) R1,600"], 
+      answer: "B",
+      explanation: "Simple interest: R5,000 × 12% × 2 = R1,200"
+    },
+    { 
+      question: "You owe R8,000 on a credit card with 18% annual interest. What's the monthly interest on the full amount?", 
+      options: ["A) R100", "B) R120", "C) R140", "D) R160"], 
+      answer: "B",
+      explanation: "Annual interest: 18% of R8,000 = R1,440. Monthly: R1,440 ÷ 12 = R120"
+    },
+    { 
+      question: "You pay R600 monthly towards a R12,000 loan. How many months to pay it off without interest?", 
+      options: ["A) 15 months", "B) 20 months", "C) 25 months", "D) 30 months"], 
+      answer: "B",
+      explanation: "R12,000 ÷ R600 = 20 months"
+    },
+    { 
+      question: "You have two debts: R2,000 at 10% interest and R3,000 at 15% interest. What's your total annual interest?", 
+      options: ["A) R450", "B) R550", "C) R650", "D) R750"], 
+      answer: "C",
+      explanation: "(R2,000 × 10%) + (R3,000 × 15%) = R200 + R450 = R650"
+    },
+    { 
+      question: "You pay R1,500 monthly towards debt. After 6 months, how much have you paid?", 
+      options: ["A) R7,500", "B) R8,000", "C) R8,500", "D) R9,000"], 
+      answer: "D",
+      explanation: "R1,500 × 6 = R9,000"
+    },
+
+    // Round 6 
+    { 
+      question: "An investment grows from R10,000 to R12,000 in 2 years. What's the annual growth rate?", 
+      options: ["A) 8%", "B) 9%", "C) 10%", "D) 11%"], 
+      answer: "C",
+      explanation: "Total growth: (R12,000 - R10,000)/R10,000 = 20%. Annual: 20% ÷ 2 = 10%"
+    },
+    { 
+      question: "You buy a TV for R8,000 on a 12-month payment plan with 5% interest. What's your monthly payment?", 
+      options: ["A) R666.67", "B) R700.00", "C) R733.33", "D) R766.67"], 
+      answer: "B",
+      explanation: "Total with interest: R8,000 × 1.05 = R8,400. Monthly: R8,400 ÷ 12 = R700"
+    },
+    { 
+      question: "Your insurance premium increases from R1,200 to R1,320 per year. What's the percentage increase?", 
+      options: ["A) 8%", "B) 9%", "C) 10%", "D) 11%"], 
+      answer: "C",
+      explanation: "Increase: R120. Percentage: (R120/R1,200) × 100 = 10%"
+    },
+    { 
+      question: "You earn R20,000 monthly. After 25% tax and R5,000 expenses, how much remains?", 
+      options: ["A) R8,000", "B) R9,000", "C) R10,000", "D) R11,000"], 
+      answer: "C",
+      explanation: "After tax: R20,000 × 0.75 = R15,000. After expenses: R15,000 - R5,000 = R10,000"
+    },
+    { 
+      question: "You save R500 monthly at 6% annual interest. What's your total after 1 year?", 
+      options: ["A) R6,000", "B) R6,180", "C) R6,240", "D) R6,300"], 
+      answer: "B",
+      explanation: "Total saved: R500 × 12 = R6,000. Interest: 6% of average balance ≈ R180. Total: ~R6,180"
+    },
+   
+
+    // ROUND 7 - TAXATION AND DEDUCTIONS
+    { 
+      question: "Your monthly salary is R25,000 before 18% tax deduction. What is your net salary after tax?",
+      options: ["A) R19,500", "B) R20,000", "C) R20,500", "D) R21,000"],
+      answer: "C",
+      explanation: "Tax amount: R25,000 × 18% = R4,500. Net salary: R25,000 - R4,500 = R20,500"
+    },
+    { 
+      question: "You receive a annual bonus of R15,000 taxed at 25%. What is your take-home bonus amount?",
+      options: ["A) R10,500", "B) R11,000", "C) R11,250", "D) R11,500"],
+      answer: "C",
+      explanation: "Tax amount: R15,000 × 25% = R3,750. Net bonus: R15,000 - R3,750 = R11,250"
+    },
+    { 
+      question: "Your UIF contribution is 1% of your R18,000 salary. How much is deducted monthly?",
+      options: ["A) R120", "B) R150", "C) R180", "D) R210"],
+      answer: "C",
+      explanation: "R18,000 × 1% = R180 monthly deduction"
+    },
+    { 
+      question: "Your gross salary is R30,000 with 22% total deductions. What is your net pay?",
+      options: ["A) R22,400", "B) R23,400", "C) R23,800", "D) R24,200"],
+      answer: "B",
+      explanation: "Total deductions: R30,000 × 22% = R6,600. Net pay: R30,000 - R6,600 = R23,400"
+    },
+    { 
+      question: "You have medical aid tax credit of R310 per month. How much does this save you annually?",
+      options: ["A) R3,620", "B) R3,720", "C) R3,820", "D) R3,920"],
+      answer: "B",
+      explanation: "R310 × 12 months = R3,720 annual saving"
+    },
+
+    // ROUND 8 - FINANCIAL STATEMENTS AND RATIOS
+    { 
+      question: "Your monthly income is R20,000 and expenses are R15,000. What is your savings ratio?",
+      options: ["A) 15%", "B) 20%", "C) 25%", "D) 30%"],
+      answer: "C",
+      explanation: "Savings: R20,000 - R15,000 = R5,000. Ratio: (R5,000/R20,000) × 100 = 25%"
+    },
+    { 
+      question: "Your debt-to-income ratio is 35% with monthly income of R18,000. What is your total debt repayment?",
+      options: ["A) R5,800", "B) R6,300", "C) R6,500", "D) R6,800"],
+      answer: "B",
+      explanation: "Total debt: R18,000 × 35% = R6,300"
+    },
+    { 
+      question: "Your assets total R250,000 and liabilities are R150,000. What is your net worth?",
+      options: ["A) R80,000", "B) R90,000", "C) R100,000", "D) R110,000"],
+      answer: "C",
+      explanation: "Net worth = Assets - Liabilities = R250,000 - R150,000 = R100,000"
+    },
+    { 
+      question: "Your fixed expenses are 60% of R15,000 income. Variable expenses are R4,000. How much can you save?",
+      options: ["A) R1,500", "B) R2,000", "C) R2,500", "D) R3,000"],
+      answer: "B",
+      explanation: "Fixed expenses: R15,000 × 60% = R9,000. Total expenses: R9,000 + R4,000 = R13,000. Savings: R15,000 - R13,000 = R2,000"
+    },
+    { 
+      question: "Your expense ratio is 3:5 (savings:expenses) on R24,000 income. How much do you save?",
+      options: ["A) R8,000", "B) R9,000", "C) R10,000", "D) R11,000"],
+      answer: "B",
+      explanation: "Total parts: 3 + 5 = 8. Savings: (3/8) × R24,000 = R9,000"
+    },
+
+    // ROUND 9 - INVESTMENTS AND INTEREST
+    { 
+      question: "You invest R10,000 at 8% compound interest for 3 years. What is the total value? (Use formula A = P(1 + i)^n)",
+      options: ["A) R12,400", "B) R12,500", "C) R12,597", "D) R12,800"],
+      answer: "C",
+      explanation: "A = R10,000 × (1 + 0.08)^3 = R10,000 × 1.2597 = R12,597"
+    },
+    { 
+      question: "Which investment gives better return: R5,000 at 7% simple interest for 4 years or R5,000 at 6% compound annually for 4 years?",
+      options: ["A) Simple interest (R1,400)", "B) Compound interest (R1,312)", "C) Both give same return", "D) Compound interest (R1,318)"],
+      answer: "D",
+      explanation: "Simple: R5,000 × 7% × 4 = R1,400. Compound: R5,000 × (1.06)^4 - R5,000 = R1,318. Simple gives more"
+    },
+    { 
+      question: "You want R50,000 in 5 years. How much must you invest now at 9% compound interest? (Use P = A/(1 + i)^n)",
+      options: ["A) R31,800", "B) R32,000", "C) R32,500", "D) R32,800"],
+      answer: "C",
+      explanation: "P = R50,000/(1.09)^5 = R50,000/1.5386 ≈ R32,500"
+    },
+    { 
+      question: "An investment doubles in 8 years. What is the annual compound interest rate? (Use Rule of 72)",
+      options: ["A) 8%", "B) 9%", "C) 10%", "D) 11%"],
+      answer: "B",
+      explanation: "Rule of 72: 72/years = rate. 72/8 = 9%"
+    },
+    { 
+      question: "You invest R2,000 annually for 5 years at 7% interest. What is the future value? (Use FV = P × [(1 + i)^n - 1]/i)",
+      options: ["A) R11,400", "B) R11,500", "C) R11,600", "D) R11,700"],
+      answer: "B",
+      explanation: "FV = R2,000 × [(1.07)^5 - 1]/0.07 ≈ R2,000 × 5.7507 ≈ R11,500"
+    },
+
+    // ROUND 10 - REAL-LIFE FINANCIAL SCENARIOS
+    { 
+      question: "You buy a car for R150,000 with 10% deposit and 5-year loan at 12% interest. What is your monthly payment?",
+      options: ["A) R2,980", "B) R3,000", "C) R3,100", "D) R3,200"],
+      answer: "A",
+      explanation: "Loan amount: R150,000 - 10% = R135,000. Monthly rate: 12%/12 = 1%. Payments: R135,000 × [0.01(1.01)^60]/[(1.01)^60 - 1] ≈ R2,980"
+    },
+    { 
+      question: "A house valued at R800,000 appreciates by 6% annually. What is its value after 3 years?",
+      options: ["A) R920,000", "B) R940,000", "C) R950,000", "D) R952,000"],
+      answer: "D",
+      explanation: "Value = R800,000 × (1.06)^3 = R800,000 × 1.191016 ≈ R952,000"
+    },
+    { 
+      question: "You pay R1,200 monthly on a R60,000 student loan at 8% interest. How many months to repay?",
+      options: ["A) 58 months", "B) 60 months", "C) 62 months", "D) 64 months"],
+      answer: "A",
+      explanation: "Using loan amortization formula: n ≈ 58 months (exact calculation required)"
+    },
+    { 
+      question: "Your retirement annuity grows from R200,000 to R350,000 in 7 years. What is the annual growth rate?",
+      options: ["A) 7.5%", "B) 8.0%", "C) 8.5%", "D) 9.0%"],
+      answer: "B",
+      explanation: "Growth factor: (R350,000/R200,000)^(1/7) ≈ 1.08 → 8%"
+    },
+    { 
+      question: "You need R10,000 in 3 years. How much must you save monthly at 6% interest compounded monthly?",
+      options: ["A) R250", "B) R254", "C) R260", "D) R265"],
+      answer: "B",
+      explanation: "Monthly rate: 6%/12 = 0.5%. PMT = R10,000/[(1.005)^36 - 1]/0.005 ≈ R254"
+    },
+  
+      // Round 11 - BUDGETING PRINCIPLES
+    {
+      question: "Which of the following is a fixed expense?",
+      options: ["A) Entertainment", "B) Groceries", "C) Rent", "D) Electricity"],
+      answer: "C",
+      explanation: "Fixed expenses are costs that remain the same each month, such as rent or loan repayments."
+    },
+    {
+      question: "Creating a budget helps you to:",
+      options: ["A) Increase your debt", "B) Track your income and expenses", "C) Avoid saving money", "D) Spend more impulsively"],
+      answer: "B",
+      explanation: "A budget is a plan for managing your money by tracking what you earn and what you spend."
+    },
+    {
+      question: "The '50/30/20' rule for budgeting suggests allocating 50% of your income to:",
+      options: ["A) Savings", "B) Wants", "C) Needs", "D) Debt repayment"],
+      answer: "C",
+      explanation: "The 50/30/20 rule typically allocates 50% to needs, 30% to wants, and 20% to savings and debt repayment."
+    },
+    {
+      question: "An emergency fund is best used for:",
+      options: ["A) Buying luxury items", "B) Covering unexpected expenses like medical bills or job loss", "C) Investing in high-risk ventures", "D) Regular entertainment"],
+      answer: "B",
+      explanation: "An emergency fund provides a financial safety net for unforeseen circumstances."
+    },
+    {
+      question: "What is the first step in creating a budget?",
+      options: ["A) Track your expenses", "B) Set financial goals", "C) Reduce unnecessary spending", "D) Calculate your total income"],
+      answer: "D",
+      explanation: "Before you can budget, you need to know how much money you are bringing in."
+    },
+
+    // Round 12 - BANKING AND TRANSACTIONS
+    {
+      question: "What is the purpose of a bank statement?",
+      options: ["A) To predict future income", "B) To show a summary of your account activity", "C) To apply for a loan", "D) To pay bills automatically"],
+      answer: "B",
+      explanation: "A bank statement details all transactions in your account over a specific period."
+    },
+    {
+      question: "What does 'ATM' stand for?",
+      options: ["A) Automated Teller Machine", "B) Automatic Transaction Machine", "C) Automated Transaction Money", "D) Automatic Teller Money"],
+      answer: "A",
+      explanation: "ATM is a machine that allows you to perform basic banking transactions without a teller."
+    },
+    {
+      question: "What is overdraft protection?",
+      options: ["A) A way to earn extra interest on your savings", "B) A service that covers transactions when you don't have enough funds, usually with a fee", "C) Insurance against theft from your account", "D) A method to increase your credit score quickly"],
+      answer: "B",
+      explanation: "Overdraft protection can prevent declined transactions or bounced cheques, but often comes with charges."
+    },
+    {
+      question: "What is the difference between a debit card and a credit card?",
+      options: ["A) A debit card uses borrowed money, while a credit card uses your own money", "B) A debit card deducts money directly from your bank account, while a credit card allows you to borrow money up to a limit", "C) A credit card is linked to your savings account, while a debit card is not", "D) There is no difference between them"],
+      answer: "B",
+      explanation: "Debit cards use funds you have, while credit cards involve borrowing that needs to be repaid."
+    },
+    {
+      question: "What is a transaction fee?",
+      options: ["A) Money you earn on your savings", "B) A charge for a banking service or transaction", "C) A discount you receive when using a specific card", "D) The total amount of money in your account"],
+      answer: "B",
+      explanation: "Transaction fees can apply to various banking activities, such as using an ATM of another bank or making certain types of transfers."
+    },
+
+    // Round 13 - UNDERSTANDING LOANS
+    {
+      question: "The principal amount of a loan is:",
+      options: ["A) The total amount to be repaid, including interest", "B) The original amount of the loan", "C) The interest rate charged on the loan", "D) The monthly repayment amount"],
+      answer: "B",
+      explanation: "The principal is the initial size of the loan that interest is calculated on."
+    },
+    {
+      question: "What is an amortization schedule?",
+      options: ["A) A summary of your credit history", "B) A table showing the breakdown of loan payments into principal and interest", "C) A document outlining the terms and conditions of a savings account", "D) A calculation of your net worth"],
+      answer: "B",
+      explanation: "An amortization schedule shows how each loan payment is applied to reduce the principal and cover the interest over the loan term."
+    },
+    {
+      question: "A secured loan is usually backed by:",
+      options: ["A) A high credit score", "B) Collateral, such as a car or house", "C) A personal guarantee from a friend", "D) A large savings account"],
+      answer: "B",
+      explanation: "Collateral provides security to the lender, reducing their risk."
+    },
+    {
+      question: "What is the impact of a longer loan term on your monthly payments?",
+      options: ["A) It increases the monthly payment", "B) It decreases the monthly payment but you pay more interest overall", "C) It has no impact on the monthly payment", "D) It eliminates the interest charged"],
+      answer: "B",
+      explanation: "Spreading payments over a longer period reduces the amount due each month, but interest accrues for a longer time."
+    },
+    {
+      question: "What is a credit score used for?",
+      options: ["A) To determine your savings account interest rate", "B) To assess your creditworthiness for loans and other financial products", "C) To calculate your monthly budget", "D) To track your investment performance"],
+      answer: "B",
+      explanation: "A credit score is a numerical representation of your history of repaying debts."
+    },
+
+    // Round 14 - INSURANCE BASICS
+    {
+      question: "The purpose of insurance is to:",
+      options: ["A) Make you wealthy", "B) Protect you financially against potential losses", "C) Guarantee investment returns", "D) Help you avoid all risks"],
+      answer: "B",
+      explanation: "Insurance helps to mitigate the financial impact of unexpected events."
+    },
+    {
+      question: "What is a premium in insurance?",
+      options: ["A) The total amount the insurance company will pay out in a claim", "B) The regular payment you make to keep your insurance policy active", "C) The amount you have to pay out-of-pocket before the insurance covers the rest", "D) A bonus you receive for having insurance"],
+      answer: "B",
+      explanation: "The premium is the cost of your insurance coverage."
+    },
+    {
+      question: "What is a deductible or excess in insurance?",
+      options: ["A) The amount the insurance company pays for every claim", "B) The portion of a claim you pay yourself", "C) A discount on your premium", "D) An extra benefit in your policy"],
+      answer: "B",
+      explanation: "The deductible is the amount you are responsible for before your insurance coverage kicks in."
+    },
+    {
+      question: "Which type of insurance typically covers damage to your vehicle in an accident?",
+      options: ["A) Life insurance", "B) Health insurance", "C) Car insurance", "D) Home contents insurance"],
+      answer: "C",
+      explanation: "Car insurance is specifically designed to cover vehicle-related risks."
+    },
+    {
+      question: "What is the benefit of having home contents insurance?",
+      options: ["A) It covers the structure of your house", "B) It protects your personal belongings inside your home against theft, damage, etc.", "C) It pays your mortgage if you lose your job", "D) It covers medical expenses for visitors"],
+      answer: "B",
+      explanation: "Home contents insurance safeguards your possessions within your residence."
+    },
+
+    // Round 15 - SAVINGS AND INVESTMENTS (More advanced)
+    {
+      question: "What is the difference between saving and investing?",
+      options: ["A) Saving involves higher risk than investing", "B) Saving is typically for short-term goals and investing for long-term growth", "C) Investing guarantees returns, while saving does not", "D) There is no difference between them"],
+      answer: "B",
+      explanation: "Saving is generally safer and for shorter horizons, while investing aims for growth over longer periods and involves more risk."
+    },
+    {
+      question: "What is diversification in investing?",
+      options: ["A) Investing all your money in one high-growth stock", "B) Spreading your investments across different asset classes to reduce risk", "C) Only investing in companies you know well", "D) Avoiding all types of risk in investments"],
+      answer: "B",
+      explanation: "Diversification helps to protect your portfolio against the poor performance of any single investment."
+    },
+    {
+      question: "What is the potential benefit of compound interest on investments?",
+      options: ["A) It reduces the total interest earned over time", "B) It allows your earnings to also earn returns, leading to faster growth", "C) It only benefits the bank or financial institution", "D) It makes your investment riskier"],
+      answer: "B",
+      explanation: "Compound interest is interest calculated on the initial principal and also on the accumulated interest of previous periods."
+    },
+    {
+      question: "What is a risk tolerance in investing?",
+      options: ["A) The amount of money you are guaranteed to earn", "B) Your ability and willingness to withstand potential losses in your investments", "C) The fees you pay to your investment advisor", "D) The historical performance of a particular investment"],
+      answer: "B",
+      explanation: "Understanding your risk tolerance helps you choose investments that align with your comfort level."
+    },
+    {
+      question: "What is inflation and how does it affect your savings?",
+      options: ["A) Inflation is a decrease in the general price level, increasing the purchasing power of your savings", "B) Inflation is an increase in the general price level, decreasing the purchasing power of your savings", "C) Inflation has no effect on savings", "D) Inflation only affects people with debts"],
+      answer: "B",
+      explanation: "Inflation erodes the real value of your money over time, meaning your savings can buy less in the future if they don't grow at least at the rate of inflation."
+    }
+      ],
+      measurements: [
+        // Your measurements questions here (same as before)
+        // Round 1 - Basic Length Conversions
+        {
+          question: "Convert 2.5 meters to centimeters:",
+          options: ["A) 25 cm", "B) 250 cm", "C) 2,500 cm", "D) 25,000 cm"],
+          answer: "B",
+          explanation: "1 meter = 100 cm, so 2.5 m × 100 = 250 cm"
+        },
+        // Rest of your measurements questions...  // Round 1 - Basic Length Conversions
+    {
+      question: "Convert 2.5 meters to centimeters:",
+      options: ["A) 25 cm", "B) 250 cm", "C) 2,500 cm", "D) 25,000 cm"],
+      answer: "B",
+      explanation: "1 meter = 100 cm, so 2.5 m × 100 = 250 cm"
+    },
+    {
+      question: "How many millimeters are in 3.8 centimeters?",
+      options: ["A) 0.38 mm", "B) 3.8 mm", "C) 38 mm", "D) 380 mm"],
+      answer: "C",
+      explanation: "1 cm = 10 mm, so 3.8 cm × 10 = 38 mm"
+    },
+    {
+      question: "A football field is approximately 100 meters long. How many kilometers is this?",
+      options: ["A) 0.1 km", "B) 1 km", "C) 10 km", "D) 100 km"],
+      answer: "A",
+      explanation: "1 km = 1,000 m, so 100 m ÷ 1,000 = 0.1 km"
+    },
+    {
+      question: "Convert 450 millimeters to meters:",
+      options: ["A) 0.045 m", "B) 0.45 m", "C) 4.5 m", "D) 45 m"],
+      answer: "B",
+      explanation: "1 m = 1,000 mm, so 450 mm ÷ 1,000 = 0.45 m"
+    },
+    {
+      question: "Which is longer: 1.2 kilometers or 1,200 meters?",
+      options: ["A) 1.2 km", "B) 1,200 m", "C) They are equal", "D) Cannot be determined"],
+      answer: "C",
+      explanation: "1.2 km = 1.2 × 1,000 = 1,200 m"
+    },
+
+    // Round 2 - Area Calculations
+    {
+      question: "Calculate the area of a rectangle 8 cm long and 5 cm wide:",
+      options: ["A) 13 cm²", "B) 26 cm²", "C) 40 cm²", "D) 80 cm²"],
+      answer: "C",
+      explanation: "Area = length × width = 8 cm × 5 cm = 40 cm²"
+    },
+    {
+      question: "A square has sides of 12 m. What is its area?",
+      options: ["A) 24 m²", "B) 48 m²", "C) 120 m²", "D) 144 m²"],
+      answer: "D",
+      explanation: "Area of square = side × side = 12 m × 12 m = 144 m²"
+    },
+    {
+      question: "Convert 5 hectares to square meters:",
+      options: ["A) 50 m²", "B) 500 m²", "C) 5,000 m²", "D) 50,000 m²"],
+      answer: "D",
+      explanation: "1 hectare = 10,000 m², so 5 ha × 10,000 = 50,000 m²"
+    },
+    {
+      question: "A triangular plot has base 10 m and height 8 m. What is its area?",
+      options: ["A) 18 m²", "B) 40 m²", "C) 80 m²", "D) 160 m²"],
+      answer: "B",
+      explanation: "Area of triangle = ½ × base × height = ½ × 10 × 8 = 40 m²"
+    },
+    {
+      question: "Which is larger: 2 km² or 200,000 m²?",
+      options: ["A) 2 km²", "B) 200,000 m²", "C) They are equal", "D) Cannot be determined"],
+      answer: "A",
+      explanation: "1 km² = 1,000,000 m², so 2 km² = 2,000,000 m² (larger than 200,000 m²)"
+    },
+
+    // Round 3 - Volume and Capacity
+    {
+      question: "Convert 3.5 liters to milliliters:",
+      options: ["A) 35 ml", "B) 350 ml", "C) 3,500 ml", "D) 35,000 ml"],
+      answer: "C",
+      explanation: "1 liter = 1,000 ml, so 3.5 l × 1,000 = 3,500 ml"
+    },
+    {
+      question: "A rectangular tank is 5 m long, 3 m wide, and 2 m high. What is its volume?",
+      options: ["A) 10 m³", "B) 30 m³", "C) 60 m³", "D) 100 m³"],
+      answer: "B",
+      explanation: "Volume = length × width × height = 5 × 3 × 2 = 30 m³"
+    },
+    {
+      question: "How many 250 ml glasses can be filled from a 2 liter bottle?",
+      options: ["A) 4", "B) 6", "C) 8", "D) 10"],
+      answer: "C",
+      explanation: "2 liters = 2,000 ml. 2,000 ÷ 250 = 8 glasses"
+    },
+    {
+      question: "Convert 450 cm³ to liters:",
+      options: ["A) 0.045 l", "B) 0.45 l", "C) 4.5 l", "D) 45 l"],
+      answer: "B",
+      explanation: "1 liter = 1,000 cm³, so 450 ÷ 1,000 = 0.45 l"
+    },
+    {
+      question: "A swimming pool holds 50,000 liters. How many kiloliters is this?",
+      options: ["A) 5 kl", "B) 50 kl", "C) 500 kl", "D) 5,000 kl"],
+      answer: "B",
+      explanation: "1 kl = 1,000 l, so 50,000 ÷ 1,000 = 50 kl"
+    },
+
+    // Round 4 - Mass and Weight
+    {
+      question: "Convert 4.2 kilograms to grams:",
+      options: ["A) 42 g", "B) 420 g", "C) 4,200 g", "D) 42,000 g"],
+      answer: "C",
+      explanation: "1 kg = 1,000 g, so 4.2 kg × 1,000 = 4,200 g"
+    },
+    {
+      question: "How many 200 g packets can be made from 1 kg of flour?",
+      options: ["A) 2", "B) 5", "C) 10", "D) 20"],
+      answer: "B",
+      explanation: "1 kg = 1,000 g. 1,000 ÷ 200 = 5 packets"
+    },
+    {
+      question: "Which is heavier: 1.5 kg or 1,800 g?",
+      options: ["A) 1.5 kg", "B) 1,800 g", "C) They are equal", "D) Cannot be determined"],
+      answer: "B",
+      explanation: "1.5 kg = 1,500 g (less than 1,800 g)"
+    },
+    {
+      question: "Convert 750 grams to kilograms:",
+      options: ["A) 0.0075 kg", "B) 0.075 kg", "C) 0.75 kg", "D) 7.5 kg"],
+      answer: "C",
+      explanation: "1 kg = 1,000 g, so 750 ÷ 1,000 = 0.75 kg"
+    },
+    {
+      question: "A bag of potatoes weighs 2.5 kg. What is its weight in milligrams?",
+      options: ["A) 2,500 mg", "B) 25,000 mg", "C) 250,000 mg", "D) 2,500,000 mg"],
+      answer: "D",
+      explanation: "1 kg = 1,000,000 mg, so 2.5 × 1,000,000 = 2,500,000 mg"
+    },
+
+    // Round 5 - Temperature and Time
+    {
+      question: "Convert 25°C to Fahrenheit (use formula: F = (C × 9/5) + 32):",
+      options: ["A) 45°F", "B) 57°F", "C) 77°F", "D) 100°F"],
+      answer: "C",
+      explanation: "F = (25 × 9/5) + 32 = 45 + 32 = 77°F"
+    },
+    {
+      question: "How many minutes are in 3.5 hours?",
+      options: ["A) 180 minutes", "B) 200 minutes", "C) 210 minutes", "D) 230 minutes"],
+      answer: "C",
+      explanation: "1 hour = 60 minutes, so 3.5 × 60 = 210 minutes"
+    },
+    {
+      question: "If it's 14:45 in 24-hour time, what is it in 12-hour format?",
+      options: ["A) 2:45 AM", "B) 2:45 PM", "C) 4:45 AM", "D) 4:45 PM"],
+      answer: "B",
+      explanation: "14:00 is 2 PM, so 14:45 is 2:45 PM"
+    },
+    {
+      question: "A meeting lasts from 10:15 AM to 12:30 PM. How long is the meeting?",
+      options: ["A) 1 hour 15 minutes", "B) 2 hours", "C) 2 hours 15 minutes", "D) 2 hours 30 minutes"],
+      answer: "C",
+      explanation: "From 10:15 to 12:15 is 2 hours, plus 15 minutes = 2 hours 15 minutes"
+    },
+    {
+      question: "Convert 98.6°F to Celsius (use formula: C = (F - 32) × 5/9):",
+      options: ["A) 35°C", "B) 36°C", "C) 37°C", "D) 38°C"],
+      answer: "C",
+      explanation: "C = (98.6 - 32) × 5/9 = 66.6 × 5/9 ≈ 37°C"
+    },
+
+    // Round 6 - Perimeter and Practical Applications
+    {
+      question: "Calculate the perimeter of a rectangle 12 m long and 8 m wide:",
+      options: ["A) 20 m", "B) 40 m", "C) 80 m", "D) 96 m"],
+      answer: "B",
+      explanation: "Perimeter = 2 × (length + width) = 2 × (12 + 8) = 40 m"
+    },
+    {
+      question: "A square has perimeter 36 cm. How long is each side?",
+      options: ["A) 6 cm", "B) 9 cm", "C) 12 cm", "D) 18 cm"],
+      answer: "B",
+      explanation: "Perimeter = 4 × side. So side = 36 ÷ 4 = 9 cm"
+    },
+    {
+      question: "A running track is 400 meters around. If you run 3.5 laps, how far have you run?",
+      options: ["A) 1,200 m", "B) 1,400 m", "C) 1,600 m", "D) 1,800 m"],
+      answer: "B",
+      explanation: "400 m × 3.5 = 1,400 m"
+    },
+    {
+      question: "A garden is 15 m long and 10 m wide. What is the perimeter?",
+      options: ["A) 25 m", "B) 50 m", "C) 100 m", "D) 150 m"],
+      answer: "B",
+      explanation: "Perimeter = 2 × (15 + 10) = 2 × 25 = 50 m"
+    },
+    {
+      question: "A triangular field has sides 30 m, 40 m, and 50 m. What is its perimeter?",
+      options: ["A) 90 m", "B) 100 m", "C) 120 m", "D) 150 m"],
+      answer: "C",
+      explanation: "Perimeter = sum of all sides = 30 + 40 + 50 = 120 m"
+    },
+
+    // Round 7 - Advanced Conversions
+    {
+      question: "Convert 2.5 acres to square meters (1 acre ≈ 4,047 m²):",
+      options: ["A) 1,000 m²", "B) 5,000 m²", "C) 10,000 m²", "D) 12,000 m²"],
+      answer: "C",
+      explanation: "2.5 acres × 4,047 ≈ 10,118 m² (closest to 10,000 m²)"
+    },
+    {
+      question: "Convert 5 cubic meters to liters:",
+      options: ["A) 50 l", "B) 500 l", "C) 5,000 l", "D) 50,000 l"],
+      answer: "C",
+      explanation: "1 m³ = 1,000 l, so 5 × 1,000 = 5,000 l"
+    },
+    {
+      question: "How many hectares are in 1 square kilometer?",
+      options: ["A) 10 ha", "B) 100 ha", "C) 1,000 ha", "D) 10,000 ha"],
+      answer: "B",
+      explanation: "1 km² = 100 hectares"
+    },
+    {
+      question: "Convert 60 km/h to m/s:",
+      options: ["A) 10 m/s", "B) 16.67 m/s", "C) 20 m/s", "D) 25 m/s"],
+      answer: "B",
+      explanation: "60 km/h = 60,000 m/3,600 s ≈ 16.67 m/s"
+    },
+    {
+      question: "Convert 1.5 tons to kilograms (1 ton = 1,000 kg):",
+      options: ["A) 15 kg", "B) 150 kg", "C) 1,500 kg", "D) 15,000 kg"],
+      answer: "C",
+      explanation: "1.5 × 1,000 = 1,500 kg"
+    },
+
+    // Round 8 - Practical Measurement Problems
+    {
+      question: "A recipe calls for 500 g flour but you only have a 100 g measuring cup. How many cups do you need?",
+      options: ["A) 2", "B) 3", "C) 4", "D) 5"],
+      answer: "D",
+      explanation: "500 ÷ 100 = 5 cups needed"
+    },
+    {
+      question: "A room is 4 m × 5 m. How many square meters of carpet are needed?",
+      options: ["A) 9 m²", "B) 18 m²", "C) 20 m²", "D) 25 m²"],
+      answer: "C",
+      explanation: "Area = 4 × 5 = 20 m²"
+    },
+    {
+      question: "A car travels 240 km in 3 hours. What is its average speed?",
+      options: ["A) 60 km/h", "B) 70 km/h", "C) 80 km/h", "D) 90 km/h"],
+      answer: "C",
+      explanation: "Speed = distance ÷ time = 240 ÷ 3 = 80 km/h"
+    },
+    {
+      question: "A water tank holds 750 liters. How many 25-liter containers can be filled?",
+      options: ["A) 25", "B) 30", "C) 35", "D) 40"],
+      answer: "B",
+      explanation: "750 ÷ 25 = 30 containers"
+    },
+    {
+      question: "A fence is to be built around a 15 m × 20 m field. How many meters of fencing are needed?",
+      options: ["A) 35 m", "B) 50 m", "C) 70 m", "D) 300 m"],
+      answer: "C",
+      explanation: "Perimeter = 2 × (15 + 20) = 70 m"
+    },
+
+    // Round 9 - Measurement Estimation
+    {
+      question: "Which is the most reasonable estimate for the height of a door?",
+      options: ["A) 2 cm", "B) 2 m", "C) 20 m", "D) 200 m"],
+      answer: "B",
+      explanation: "Standard door height is about 2 meters"
+    },
+    {
+      question: "What is a reasonable estimate for the weight of an apple?",
+      options: ["A) 15 g", "B) 150 g", "C) 1.5 kg", "D) 15 kg"],
+      answer: "B",
+      explanation: "An average apple weighs about 150 grams"
+    },
+    {
+      question: "What is a reasonable estimate for the capacity of a coffee mug?",
+      options: ["A) 25 ml", "B) 250 ml", "C) 2.5 l", "D) 25 l"],
+      answer: "B",
+      explanation: "A standard coffee mug holds about 250 milliliters"
+    },
+    {
+      question: "What is a reasonable estimate for the area of a classroom?",
+      options: ["A) 5 m²", "B) 50 m²", "C) 500 m²", "D) 5,000 m²"],
+      answer: "B",
+      explanation: "A typical classroom is about 50 square meters"
+    },
+    {
+      question: "What is a reasonable estimate for the thickness of a smartphone?",
+      options: ["A) 0.8 mm", "B) 8 mm", "C) 80 mm", "D) 800 mm"],
+      answer: "B",
+      explanation: "Most smartphones are about 8 millimeters thick"
+    },
+
+    // Round 10 - Measurement in Real-World Contexts
+    {
+      question: "A medicine dosage is 5 ml per kg of body weight. For a 60 kg person, how much is needed?",
+      options: ["A) 12 ml", "B) 60 ml", "C) 300 ml", "D) 3,000 ml"],
+      answer: "C",
+      explanation: "5 ml/kg × 60 kg = 300 ml"
+    },
+    {
+      question: "A map scale is 1:50,000. If 2 cm on the map represents how many km in reality?",
+      options: ["A) 0.25 km", "B) 1 km", "C) 2.5 km", "D) 10 km"],
+      answer: "B",
+      explanation: "2 cm × 50,000 = 100,000 cm = 1 km"
+    },
+    {
+      question: "A car's fuel efficiency is 15 km/l. How many liters are needed for a 225 km trip?",
+      options: ["A) 10 l", "B) 15 l", "C) 20 l", "D) 25 l"],
+      answer: "B",
+      explanation: "225 km ÷ 15 km/l = 15 liters"
+    },
+    {
+      question: "A recipe serves 4 people but you need to serve 10. By what factor should you multiply the ingredients?",
+      options: ["A) 1.5", "B) 2", "C) 2.5", "D) 3"],
+      answer: "C",
+      explanation: "10 ÷ 4 = 2.5 times the original amount"
+    },
+    {
+      question: "A 150 cm tall person's shadow is 200 cm long. If a tree's shadow is 8 m, how tall is the tree?",
+      options: ["A) 4 m", "B) 6 m", "C) 8 m", "D) 10 m"],
+      answer: "B",
+      explanation: "150/200 = x/800 → x = (150×800)/200 = 600 cm = 6 m"
+    },
+    
+  {
+    question: "What is the perimeter of a rectangle that is 5 meters long and 3 meters wide?",
+    options: ["A) 8 m", "B) 15 m", "C) 16 m", "D) 30 m"],
+    answer: "C",
+    explanation: "Perimeter = 2 × (Length + Width) = 2 × (5 + 3) = 16 meters"
+  },
+  {
+    question: "What is the area of a rectangle that is 6 m long and 4 m wide?",
+    options: ["A) 10 m²", "B) 24 m²", "C) 20 m²", "D) 12 m²"],
+    answer: "B",
+    explanation: "Area = Length × Width = 6 × 4 = 24 square meters"
+  },
+  {
+    question: "What is the volume of a box that is 2 m long, 1 m wide, and 0.5 m high?",
+    options: ["A) 1 m³", "B) 2 m³", "C) 3 m³", "D) 4 m³"],
+    answer: "A",
+    explanation: "Volume = Length × Width × Height = 2 × 1 × 0.5 = 1 cubic meter"
+  },
+  {
+    question: "Which unit is best to measure the weight of a schoolbag?",
+    options: ["A) Grams", "B) Kilograms", "C) Tonnes", "D) Milligrams"],
+    answer: "B",
+    explanation: "A schoolbag typically weighs a few kilograms"
+  },
+  {
+    question: "If a bus leaves at 14:30 and arrives at 17:00, how long is the journey?",
+    options: ["A) 2 hours 30 minutes", "B) 3 hours", "C) 2 hours", "D) 3 hours 30 minutes"],
+    answer: "C",
+    explanation: "17:00 - 14:30 = 2 hours and 30 minutes, which is 2.5 hours, but closest match is C"
+  },
+  {
+    question: "What temperature would water typically boil at?",
+    options: ["A) 0°C", "B) 25°C", "C) 50°C", "D) 100°C"],
+    answer: "D",
+    explanation: "Water boils at 100 degrees Celsius"
+  },
+  {
+    question: "A car travels 180 km in 3 hours. What is its average speed?",
+    options: ["A) 60 km/h", "B) 90 km/h", "C) 30 km/h", "D) 45 km/h"],
+    answer: "A",
+    explanation: "Speed = Distance ÷ Time = 180 ÷ 3 = 60 km/h"
+  },
+  {
+    question: "A map has a scale of 1:100 000. What real-life distance does 2 cm represent?",
+    options: ["A) 200 m", "B) 2 km", "C) 20 km", "D) 200 km"],
+    answer: "B",
+    explanation: "1 cm = 1 km, so 2 cm = 2 km in real distance"
+  },
+  {
+    question: "Convert 3.5 liters to milliliters.",
+    options: ["A) 350 ml", "B) 3 500 ml", "C) 35 ml", "D) 35 000 ml"],
+    answer: "B",
+    explanation: "1 liter = 1000 milliliters, so 3.5 liters = 3 500 milliliters"
+  },
+  {
+    question: "What is a reasonable estimate for the capacity of a coffee mug?",
+    options: ["A) 25 ml", "B) 250 ml", "C) 2.5 l", "D) 25 l"],
+    answer: "B",
+    explanation: "A standard coffee mug holds about 250 milliliters"
+  },
+      ],
+      dataHandling: [
+        // Your data handling questions here (same as before)
+        // Round 1 - Basic Data Interpretation
+        {
+          question: "If a class has 5 students scoring 60%, 8 scoring 70%, and 7 scoring 80%, what is the total number of students?",
+          options: ["A) 15", "B) 18", "C) 20", "D) 25"],
+          answer: "C",
+          explanation: "Total students = 5 + 8 + 7 = 20"
+        },
+        // Rest of your data handling questions...  // Round 1 - Basic Data Interpretation
+  {
+    question: "If a class has 5 students scoring 60%, 8 scoring 70%, and 7 scoring 80%, what is the total number of students?",
+    options: ["A) 15", "B) 18", "C) 20", "D) 25"],
+    answer: "C",
+    explanation: "Total students = 5 + 8 + 7 = 20"
+  },
+  {
+    question: "What is the mode of this data set: 5, 7, 3, 5, 2, 7, 5?",
+    options: ["A) 2", "B) 3", "C) 5", "D) 7"],
+    answer: "C",
+    explanation: "5 appears most frequently (3 times)"
+  },
+  {
+    question: "The median of 12, 15, 10, 8, 14 is:",
+    options: ["A) 10", "B) 12", "C) 14", "D) 15"],
+    answer: "B",
+    explanation: "Ordered set: 8, 10, 12, 14, 15 → middle value is 12"
+  },
+  {
+    question: "A survey found 40% of 200 people prefer tea. How many people is this?",
+    options: ["A) 40", "B) 60", "C) 80", "D) 100"],
+    answer: "C",
+    explanation: "40% of 200 = 0.4 × 200 = 80 people"
+  },
+  {
+    question: "What is the range of: 3, 9, 5, 12, 4?",
+    options: ["A) 3", "B) 5", "C) 7", "D) 9"],
+    answer: "D",
+    explanation: "Range = max - min = 12 - 3 = 9"
+  },
+
+  // Round 2 - Graphs and Charts
+  {
+    question: "In a pie chart showing budget allocation, a 90° sector represents what percentage?",
+    options: ["A) 15%", "B) 20%", "C) 25%", "D) 30%"],
+    answer: "C",
+    explanation: "90°/360° = 0.25 → 25%"
+  },
+  {
+    question: "A bar graph shows sales increasing from R20,000 to R30,000. What is the percentage increase?",
+    options: ["A) 30%", "B) 40%", "C) 50%", "D) 60%"],
+    answer: "C",
+    explanation: "Increase = (30,000 - 20,000)/20,000 × 100 = 50%"
+  },
+  {
+    question: "Which graph is best for showing trends over time?",
+    options: ["A) Pie chart", "B) Bar graph", "C) Line graph", "D) Histogram"],
+    answer: "C",
+    explanation: "Line graphs are ideal for trends over time intervals"
+  },
+  {
+    question: "A histogram differs from a bar graph because it:",
+    options: ["A) Shows categories", "B) Has gaps between bars", "C) Represents continuous data", "D) Uses percentages"],
+    answer: "C",
+    explanation: "Histograms show frequency distributions of continuous data"
+  },
+  {
+    question: "In a scatter plot showing positive correlation:",
+    options: ["A) Points slope downward", "B) Points are scattered randomly", "C) Points slope upward", "D) Points form a circle"],
+    answer: "C",
+    explanation: "Positive correlation shows an upward trend in points"
+  },
+
+  // Round 3 - Averages and Spread
+  {
+    question: "Calculate the mean of: 5, 8, 12, 15",
+    options: ["A) 8", "B) 9", "C) 10", "D) 12"],
+    answer: "C",
+    explanation: "Mean = (5 + 8 + 12 + 15)/4 = 40/4 = 10"
+  },
+  {
+    question: "If the mean of five numbers is 6, their total sum is:",
+    options: ["A) 20", "B) 25", "C) 30", "D) 35"],
+    answer: "C",
+    explanation: "Sum = mean × count = 6 × 5 = 30"
+  },
+  {
+    question: "Which measure is least affected by outliers?",
+    options: ["A) Mean", "B) Median", "C) Mode", "D) Range"],
+    answer: "B",
+    explanation: "Median is less sensitive to extreme values than mean"
+  },
+  {
+    question: "The interquartile range (IQR) measures:",
+    options: ["A) The middle 50% of data", "B) The total spread", "C) The average", "D) The most frequent value"],
+    answer: "A",
+    explanation: "IQR = Q3 - Q1 (middle 50% of the data)"
+  },
+  {
+    question: "A data set with two modes is called:",
+    options: ["A) Unimodal", "B) Bimodal", "C) Trimodal", "D) Nonmodal"],
+    answer: "B",
+    explanation: "Bimodal = two distinct peaks/modes"
+  },
+
+  // Round 4 - Probability Basics
+  {
+    question: "The probability of rolling a 3 on a fair die is:",
+    options: ["A) 1/2", "B) 1/3", "C) 1/6", "D) 1/12"],
+    answer: "C",
+    explanation: "1 favorable outcome out of 6 possible"
+  },
+  {
+    question: "If there's a 30% chance of rain, the probability it won't rain is:",
+    options: ["A) 0.3", "B) 0.5", "C) 0.7", "D) 0.9"],
+    answer: "C",
+    explanation: "100% - 30% = 70% or 0.7"
+  },
+  {
+    question: "Two coins are tossed. Probability of two heads is:",
+    options: ["A) 1/4", "B) 1/2", "C) 3/4", "D) 1"],
+    answer: "A",
+    explanation: "Possible outcomes: HH, HT, TH, TT → 1/4 chance for HH"
+  },
+  {
+    question: "A probability of 1 means:",
+    options: ["A) Impossible", "B) Certain", "C) 50% chance", "D) Unknown"],
+    answer: "B",
+    explanation: "Probability of 1 = 100% certainty"
+  },
+  {
+    question: "From a deck of 52 cards, probability of drawing a heart is:",
+    options: ["A) 1/13", "B) 1/4", "C) 1/2", "D) 1/52"],
+    answer: "B",
+    explanation: "13 hearts / 52 cards = 1/4"
+  },
+
+  // Round 5 - Real-World Data Analysis
+  {
+    question: "A survey says 150 of 500 people own cars. What percentage is this?",
+    options: ["A) 15%", "B) 25%", "C) 30%", "D) 35%"],
+    answer: "C",
+    explanation: "150/500 × 100 = 30%"
+  },
+  {
+    question: "If a population grows from 1,000 to 1,200, the growth rate is:",
+    options: ["A) 10%", "B) 15%", "C) 20%", "D) 25%"],
+    answer: "C",
+    explanation: "(1,200 - 1,000)/1,000 × 100 = 20%"
+  },
+  {
+    question: "A product's rating is 4.2 from 50 reviews. Total stars given is:",
+    options: ["A) 180", "B) 200", "C) 210", "D) 220"],
+    answer: "C",
+    explanation: "Total stars = average × count = 4.2 × 50 = 210"
+  },
+  {
+    question: "If 25% of data points are below 40, then 40 is the:",
+    options: ["A) Mean", "B) First quartile (Q1)", "C) Median", "D) Third quartile (Q3)"],
+    answer: "B",
+    explanation: "Q1 marks the 25th percentile"
+  },
+  {
+    question: "A confidence interval represents:",
+    options: ["A) Exact values", "B) A range of plausible values", "C) The mode", "D) Data outliers"],
+    answer: "B",
+    explanation: "Confidence intervals estimate a range for population parameters"
+  },
+
+  // Round 6 - Advanced Data Interpretation
+  {
+    question: "If y doubles when x triples, the relationship is:",
+    options: ["A) Linear", "B) Quadratic", "C) Exponential", "D) Inverse"],
+    answer: "C",
+    explanation: "Exponential growth shows rapid increase"
+  },
+  {
+    question: "A correlation coefficient of -0.9 indicates:",
+    options: ["A) Strong positive correlation", "B) Weak negative correlation", "C) Strong negative correlation", "D) No correlation"],
+    answer: "C",
+    explanation: "-0.9 is close to -1 → strong negative correlation"
+  },
+  {
+    question: "In a normal distribution, what percentage lies within ±1 standard deviation?",
+    options: ["A) 50%", "B) 68%", "C) 95%", "D) 99.7%"],
+    answer: "B",
+    explanation: "68% of data falls within ±1σ in a normal curve"
+  },
+  {
+    question: "A p-value < 0.05 in statistics suggests:",
+    options: ["A) No significance", "B) Results are significant", "C) Data is normal", "D) Sample size is small"],
+    answer: "B",
+    explanation: "p < 0.05 typically indicates statistically significant results"
+  },
+  {
+    question: "Which measure is most affected by skewed data?",
+    options: ["A) Median", "B) Mode", "C) Mean", "D) Range"],
+    answer: "C",
+    explanation: "Mean is pulled toward the skew's tail"
+  },
+
+  // Round 7 - Misleading Data
+  {
+    question: "Truncating the y-axis on a graph can:",
+    options: ["A) Show more detail", "B) Exaggerate differences", "C) Make data normal", "D) Hide outliers"],
+    answer: "B",
+    explanation: "Shortening the y-axis can make small differences appear larger"
+  },
+  {
+    question: "Cherry-picking data means:",
+    options: ["A) Using random samples", "B) Selecting only favorable data", "C) Including all data points", "D) Using averages"],
+    answer: "B",
+    explanation: "Cherry-picking is selectively choosing data to support a claim"
+  },
+  {
+    question: "A graph without proper labels is problematic because:",
+    options: ["A) It's colorful", "B) Data is hidden", "C) It lacks context", "D) It uses averages"],
+    answer: "C",
+    explanation: "Labels provide essential context for interpretation"
+  },
+  {
+    question: "Using 3D effects in pie charts can:",
+    options: ["A) Improve accuracy", "B) Distort proportions", "C) Show more data", "D) Highlight trends"],
+    answer: "B",
+    explanation: "3D effects can make some slices appear larger than they are"
+  },
+  {
+    question: "A survey question like 'Do you support education?' is biased because:",
+    options: ["A) It's too specific", "B) It's leading", "C) It's open-ended", "D) It's numerical"],
+    answer: "B",
+    explanation: "Most people would agree, making the question loaded"
+  },
+
+  // Round 8 - Financial Data
+  {
+    question: "A company's profit increased from R1m to R1.5m. The percentage increase is:",
+    options: ["A) 25%", "B) 40%", "C) 50%", "D) 60%"],
+    answer: "C",
+    explanation: "(1.5 - 1)/1 × 100 = 50% increase"
+  },
+  {
+    question: "Compound interest is calculated on:",
+    options: ["A) Principal only", "B) Principal + previous interest", "C) Interest only", "D) Monthly deposits"],
+    answer: "B",
+    explanation: "Compound interest includes interest earned on prior interest"
+  },
+  {
+    question: "Inflation at 5% means prices increased by:",
+    options: ["A) 5% overall", "B) 5% for all items", "C) 5% on average", "D) Exactly 5% per item"],
+    answer: "C",
+    explanation: "Inflation measures average price increases across many goods"
+  },
+  {
+    question: "A budget deficit occurs when:",
+    options: ["A) Income > expenses", "B) Income = expenses", "C) Income < expenses", "D) Savings increase"],
+    answer: "C",
+    explanation: "Deficit = spending exceeds income"
+  },
+  {
+    question: "The GDP growth rate measures:",
+    options: ["A) Population growth", "B) Economic expansion", "C) Unemployment", "D) Inflation"],
+    answer: "B",
+    explanation: "GDP growth reflects changes in economic output"
+  },
+  
+  {
+    question: "Which measure of central tendency is most affected by extreme values?",
+    options: ["A) Mean", "B) Median", "C) Mode", "D) Range"],
+    answer: "A",
+    explanation: "The mean is sensitive to outliers and can be skewed by extreme values."
+  },
+  {
+    question: "What type of graph is best for showing how data changes over time?",
+    options: ["A) Bar graph", "B) Line graph", "C) Pie chart", "D) Histogram"],
+    answer: "B",
+    explanation: "Line graphs are ideal for displaying trends over time."
+  },
+  {
+    question: "A student recorded these scores: 65, 70, 70, 75, 80. What is the mode?",
+    options: ["A) 70", "B) 75", "C) 80", "D) 65"],
+    answer: "A",
+    explanation: "70 appears more than once, making it the mode."
+  },
+  {
+    question: "In a survey, 40% of respondents preferred option A. What is this 40% called?",
+    options: ["A) Mean", "B) Probability", "C) Proportion", "D) Frequency"],
+    answer: "C",
+    explanation: "Proportion refers to a part of the whole, often expressed as a percentage."
+  },
+  {
+    question: "What is the median of the dataset: 3, 7, 9, 15, 21?",
+    options: ["A) 7", "B) 9", "C) 15", "D) 12"],
+    answer: "B",
+    explanation: "The median is the middle number in an ordered dataset, which is 9."
+  },
+  
+  {
+    question: "What does the range of a dataset represent?",
+    options: ["A) The average value", "B) The middle value", "C) The most frequent value", "D) The difference between the highest and lowest values"],
+    answer: "D",
+    explanation: "The range is found by subtracting the smallest value from the largest."
+  },
+  {
+    question: "Which graph is best for showing the proportion of parts to a whole?",
+    options: ["A) Line graph", "B) Pie chart", "C) Histogram", "D) Scatter plot"],
+    answer: "B",
+    explanation: "Pie charts effectively show how different parts contribute to a whole."
+  },
+  {
+    question: "How many degrees does each section of a pie chart represent if there are 4 equal sections?",
+    options: ["A) 45°", "B) 90°", "C) 120°", "D) 180°"],
+    answer: "B",
+    explanation: "360° divided by 4 sections = 90° per section."
+  },
+  {
+    question: "If the mean of 5 test scores is 60, what is the total of all the scores?",
+    options: ["A) 300", "B) 60", "C) 12", "D) 100"],
+    answer: "A",
+    explanation: "Mean × number of values = total; 60 × 5 = 300."
+  },
+  {
+    question: "What is the mode of the dataset: 4, 5, 4, 6, 7, 4, 8?",
+    options: ["A) 5", "B) 4", "C) 6", "D) 7"],
+    answer: "B",
+    explanation: "The number 4 appears most frequently."
+  },
+  {
+    question: "Which of the following is not a measure of central tendency?",
+    options: ["A) Mean", "B) Range", "C) Median", "D) Mode"],
+    answer: "B",
+    explanation: "Range measures spread, not central tendency."
+  },
+  {
+    question: "A learner scored the following in a test: 70, 80, 90. What is the average score?",
+    options: ["A) 70", "B) 80", "C) 90", "D) 75"],
+    answer: "B",
+    explanation: "Mean = (70 + 80 + 90) ÷ 3 = 240 ÷ 3 = 80."
+  },
+  {
+    question: "What type of graph uses bars to show frequency of categories?",
+    options: ["A) Pie chart", "B) Line graph", "C) Bar graph", "D) Scatter plot"],
+    answer: "C",
+    explanation: "Bar graphs are used to show frequency of categories with bars."
+  },
+  {
+    question: "What would be a misleading way to present data?",
+    options: ["A) Using a broken y-axis", "B) Showing actual data points", "C) Labeling all axes", "D) Using accurate scales"],
+    answer: "A",
+    explanation: "A broken y-axis can exaggerate or hide trends and mislead viewers."
+  },
+  {
+    question: "Which measure is best to describe the most common value in a dataset?",
+    options: ["A) Mode", "B) Mean", "C) Median", "D) Range"],
+    answer: "A",
+    explanation: "Mode represents the value that occurs most frequently."
+  }
+
+      ]
+    };
+
+    // Sidebar Toggle
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+      mainContent.classList.toggle('shifted');
+      playSound(clickSound);
+    });
+
+    closeBtn.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      mainContent.classList.remove('shifted');
+      playSound(clickSound);
+    });
+
+    // Play sound function
+    function playSound(sound) {
+      sound.currentTime = 0;
+      sound.play().catch(e => console.log("Sound playback prevented:", e));
+    }
+
+    // Start Quiz
+    function startQuiz(topic) {
+      playSound(clickSound);
+      currentTopic = topic;
+      currentRound = 1;
+      userAnswers = [];
+      seconds = 0;
+      
+      // Reset timer
+      clearInterval(timerInterval);
+      startTimer();
+      
+      document.getElementById('category-selection').style.display = 'none';
+      document.getElementById('quiz-section').style.display = 'block';
+      loadRound();
+      
+      // Close sidebar if open
+      sidebar.classList.remove('active');
+      mainContent.classList.remove('shifted');
+      
+      // Save progress
+      saveProgress();
+    }
+
+    // Timer functions
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        seconds++;
+        updateTimerDisplay();
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      timerElement.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      
+      // Play timer sound every minute
+      if (seconds > 0 && seconds % 60 === 0) {
+        playSound(timerSound);
+      }
+    }
+
+    // Load Questions
+    function loadRound() {
+      const startIndex = (currentRound - 1) * questionsPerRound;
+      const endIndex = startIndex + questionsPerRound;
+      currentQuestions = quizData[currentTopic].slice(startIndex, endIndex);
+      
+      let questionsHTML = '';
+      currentQuestions.forEach((question, index) => {
+        const questionNum = (currentRound - 1) * questionsPerRound + index + 1;
+        questionsHTML += `
+          <div class="question">
+            <h4>Question ${questionNum}: ${question.question}</h4>
+            <div class="options">
+              ${question.options.map((option, i) => {
+                const optionId = `q${index}_${i}`;
+                const optionValue = String.fromCharCode(65 + i);
+                const isChecked = userAnswers[(currentRound - 1) * questionsPerRound + index] === optionValue;
+                return `
+                  <div class="option">
+                    <input type="radio" name="q${index}" id="${optionId}" value="${optionValue}" ${isChecked ? 'checked' : ''}>
+                    <label for="${optionId}">
+                      <span class="checkmark"></span>
+                      ${option}
+                    </label>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      });
+      
+      document.getElementById('questions').innerHTML = questionsHTML;
+      document.getElementById('round-number').innerText = currentRound;
+      updateProgress();
+      document.getElementById('answers').style.display = 'none';
+      document.getElementById('correct-answers-list').innerHTML = '';
+      document.getElementById('next-round-btn').style.display = 'none';
+      document.getElementById('result').innerText = '';
+      document.getElementById('show-answers-btn').style.display = 'none';
+      
+      // Show/hide previous button
+      document.getElementById('prev-btn').style.display = currentRound > 1 ? 'inline-block' : 'none';
+      
+      // Add event listeners to options for sound feedback
+      document.querySelectorAll('.option input').forEach(input => {
+        input.addEventListener('click', () => {
+          playSound(clickSound);
+          // Save the selected answer
+          const questionIndex = parseInt(input.name.substring(1));
+          userAnswers[(currentRound - 1) * questionsPerRound + questionIndex] = input.value;
+          saveProgress();
+        });
+      });
+      
+      // Scroll to top of questions
+      document.getElementById('questions').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Update Progress Bar
+    function updateProgress() {
+      const totalRounds = Math.ceil(quizData[currentTopic].length / questionsPerRound);
+      progress = ((currentRound - 1) / totalRounds) * 100;
+      document.getElementById('progress-bar-fill').style.width = `${progress}%`;
+      document.getElementById('progress-percent').textContent = Math.round(progress);
+    }
+
+    // Submit Answers
+    function submitQuiz() {
+      playSound(clickSound);
+      let allAnswered = true;
+      let score = 0;
+      let answersList = '';
+      
+      currentQuestions.forEach((question, index) => {
+        const questionIndex = (currentRound - 1) * questionsPerRound + index;
+        const selectedOption = document.querySelector(`input[name="q${index}"]:checked`);
+        
+        if (!selectedOption) {
+          allAnswered = false;
+        } else {
+          userAnswers[questionIndex] = selectedOption.value;
+          const isCorrect = selectedOption.value === question.answer;
+          if (isCorrect) score++;
+          
+          answersList += `
+            <li>
+              <strong>Question ${(currentRound - 1) * questionsPerRound + index + 1}:</strong> ${question.question}<br>
+              <span class="${isCorrect ? 'correct' : 'incorrect'}">
+                Your answer: ${question.options[selectedOption.value.charCodeAt(0) - 65]} 
+                ${isCorrect ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>'}
+              </span><br>
+              Correct answer: ${question.options[question.answer.charCodeAt(0) - 65]}<br>
+              <em>${question.explanation}</em>
+            </li>
+          `;
+        }
+      });
+
+      if (!allAnswered) {
+        alert("Please answer all the questions before submitting");
+        return;
+      }
+
+      // Play sound based on performance
+      if (score >= currentQuestions.length * 0.8) {
+        playSound(completeSound);
+      } else if (score >= currentQuestions.length * 0.5) {
+        playSound(correctSound);
+      } else {
+        playSound(wrongSound);
+      }
+
+      document.getElementById('result').innerHTML = `
+        <i class="fas fa-${score >= currentQuestions.length * 0.5 ? 'smile' : 'frown'}"></i>
+        You scored ${score} out of ${currentQuestions.length} in this round
+      `;
+      document.getElementById('show-answers-btn').style.display = 'block';
+      
+      const totalRounds = Math.ceil(quizData[currentTopic].length / questionsPerRound);
+      if (currentRound < totalRounds) {
+        document.getElementById('next-round-btn').style.display = 'block';
+        document.getElementById('next-round-btn').innerHTML = `
+          <button class="button" onclick="nextRound()">
+            <i class="fas fa-arrow-right"></i> Go to Round ${currentRound + 1}
+          </button>
+        `;
+      } else {
+        showFinalResults();
+      }
+      
+      // Save progress
+      saveProgress();
+    }
+
+    // Toggle answer visibility
+    function toggleAnswers() {
+      playSound(clickSound);
+      const answersSection = document.getElementById('answers');
+      const showAnswersBtn = document.getElementById('show-answers-btn');
+      
+      if (answersSection.style.display === 'block') {
+        answersSection.style.display = 'none';
+        showAnswersBtn.innerHTML = '<i class="fas fa-eye"></i> View Corrections';
+      } else {
+        answersSection.style.display = 'block';
+        showAnswersBtn.innerHTML = '<i class="fas fa-eye-slash"></i> Hide Corrections';
+        
+        // Generate answers list if not already done
+        if (document.getElementById('correct-answers-list').innerHTML === '') {
+          let answersList = '';
+          currentQuestions.forEach((question, index) => {
+            const questionIndex = (currentRound - 1) * questionsPerRound + index;
+            const selectedOption = userAnswers[questionIndex];
+            const isCorrect = selectedOption === question.answer;
+            
+            answersList += `
+              <li>
+                <strong>Question ${questionIndex + 1}:</strong> ${question.question}<br>
+                <span class="${isCorrect ? 'correct' : 'incorrect'}">
+                  Your answer: ${question.options[selectedOption.charCodeAt(0) - 65]} 
+                  ${isCorrect ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>'}
+                </span><br>
+                Correct answer: ${question.options[question.answer.charCodeAt(0) - 65]}<br>
+                <em>${question.explanation}</em>
+              </li>
+            `;
+          });
+          
+          document.getElementById('correct-answers-list').innerHTML = answersList;
+        }
+      }
+    }
+
+    // Next Round
+    function nextRound() {
+      playSound(clickSound);
+      currentRound++;
+      loadRound();
+      // Save progress
+      saveProgress();
+    }
+
+    // Previous Round
+    function prevRound() {
+      playSound(clickSound);
+      if (currentRound > 1) {
+        currentRound--;
+        loadRound();
+        // Save progress
+        saveProgress();
+      }
+    }
+
+    // Show Final Results
+    function showFinalResults() {
+      let totalScore = 0;
+      quizData[currentTopic].forEach((question, index) => {
+        if (userAnswers[index] === question.answer) {
+          totalScore++;
+        }
+      });
+      
+      const percentage = Math.round((totalScore / quizData[currentTopic].length) * 100);
+      let message = '';
+      let icon = '';
+      
+      if (percentage >= 80) {
+        message = 'Excellent work! <i class="fas fa-trophy"></i>';
+        icon = 'fa-grin-stars';
+      } else if (percentage >= 60) {
+        message = 'Good job! <i class="fas fa-thumbs-up"></i>';
+        icon = 'fa-smile-beam';
+      } else {
+        message = 'Keep practicing! <i class="fas fa-book"></i>';
+        icon = 'fa-meh';
+      }
+      
+      // Play appropriate sound
+      if (percentage >= 80) {
+        playSound(completeSound);
+      } else if (percentage >= 60) {
+        playSound(correctSound);
+      } else {
+        playSound(wrongSound);
+      }
+      
+      document.getElementById('next-round-btn').innerHTML = `
+        <button class="button" onclick="restartQuiz()">
+          <i class="fas fa-redo"></i> Take Quiz Again
+        </button>
+      `;
+      
+      document.getElementById('questions').innerHTML = `
+        <div class="final-score">
+          <h3>Quiz Completed! <i class="fas ${icon}"></i></h3>
+          <p>Time taken: ${timerElement.textContent}</p>
+          <p>Your final score: ${totalScore} out of ${quizData[currentTopic].length} (${percentage}%)</p>
+          <p>${message}</p>
+        </div>
+      `;
+      
+      // Stop timer
+      clearInterval(timerInterval);
+    }
+
+    // Restart Quiz
+    function restartQuiz() {
+      playSound(clickSound);
+      document.getElementById('category-selection').style.display = 'block';
+      document.getElementById('quiz-section').style.display = 'none';
+      document.getElementById('answers').style.display = 'none';
+      document.getElementById('next-round-btn').style.display = 'none';
+      document.getElementById('result').innerHTML = '';
+      document.getElementById('questions').innerHTML = '';
+      
+      // Reset timer
+      clearInterval(timerInterval);
+      seconds = 0;
+      timerElement.textContent = '00:00';
+      
+      // Clear saved progress
+      localStorage.removeItem('quizProgress');
+    }
+
+    // Save progress to localStorage
+    function saveProgress() {
+      const progress = {
+        topic: currentTopic,
+        round: currentRound,
+        answers: userAnswers,
+        time: seconds
+      };
+      localStorage.setItem('quizProgress', JSON.stringify(progress));
+    }
+
+    // Load progress from localStorage
+    function loadProgress() {
+      const savedProgress = localStorage.getItem('quizProgress');
+      if (savedProgress) {
+        const progress = JSON.parse(savedProgress);
+        currentTopic = progress.topic;
+        currentRound = progress.round;
+        userAnswers = progress.answers || [];
+        seconds = progress.time || 0;
+        
+        if (currentTopic) {
+          document.getElementById('category-selection').style.display = 'none';
+          document.getElementById('quiz-section').style.display = 'block';
+          loadRound();
+          startTimer();
+        }
+      }
+    }
+
+    // Show instructions
+    function showInstructions() {
+      playSound(clickSound);
+      document.getElementById('questions').innerHTML = `
+        <div class="final-score">
+          <h3><i class="fas fa-info-circle"></i> Quiz Instructions</h3>
+          <p>1. Select a quiz category to begin</p>
+          <p>2. Each quiz has multiple rounds with 5 questions each</p>
+          <p>3. Answer all questions in a round before submitting</p>
+          <p>4. Review your answers before proceeding to the next round</p>
+          <p>5. Complete all rounds to see your final score</p>
+          <button class="button" onclick="loadRound()">
+            <i class="fas fa-arrow-left"></i> Back to Quiz
+          </button>
+        </div>
+      `;
+      document.getElementById('answers').style.display = 'none';
+      document.getElementById('next-round-btn').style.display = 'none';
+    }
+
+    // Show About Us section
+    function showAboutUs() {
+      playSound(clickSound);
+      document.getElementById('questions').innerHTML = `
+        <div class="final-score">
+          <h3><i class="fas fa-users"></i> About Us</h3>
+          <p>P&P Academic First is an educational initiative dedicated to helping students excel in their studies through interactive quizzes and learning materials.</p>
+          <p>Our mission is to make learning engaging and accessible to all students, regardless of their background or location.</p>
+          <p>We specialize in Mathematical Literacy and are expanding to other subjects to provide comprehensive academic support.</p>
+          <button class="button" onclick="loadRound()">
+            <i class="fas fa-arrow-left"></i> Back to Quiz
+          </button>
+        </div>
+      `;
+      document.getElementById('answers').style.display = 'none';
+      document.getElementById('next-round-btn').style.display = 'none';
+    }
+
+    // Show Privacy Policy
+    function showPrivacyPolicy() {
+      playSound(clickSound);
+      document.getElementById('questions').innerHTML = `
+        <div class="final-score">
+          <h3><i class="fas fa-shield-alt"></i> Privacy Policy</h3>
+          <p><strong>Last Updated:</strong> June 2023</p>
+          
+          <h4>1. Information We Collect</h4>
+          <p>We store your quiz progress locally on your device to allow you to continue where you left off. This includes:</p>
+          <ul>
+            <li>Selected answers</li>
+            <li>Current quiz progress</li>
+            <li>Time spent on quizzes</li>
+          </ul>
+          
+          <h4>2. How We Use Your Information</h4>
+          <p>The information is used solely to:</p>
+          <ul>
+            <li>Provide a continuous learning experience</li>
+            <li>Track your progress through quizzes</li>
+            <li>Improve our educational content</li>
+          </ul>
+          
+          <h4>3. Data Storage</h4>
+          <p>All data is stored locally in your browser and is not transmitted to any servers. You can clear this data at any time by clearing your browser storage or using the "Restart Quiz" function.</p>
+          
+          <h4>4. Contact Us</h4>
+          <p>If you have any questions about this Privacy Policy, please contact us at shishieynarrow@gmail.com</p>
+          
+          <button class="button" onclick="loadRound()">
+            <i class="fas fa-arrow-left"></i> Back to Quiz
+          </button>
+        </div>
+      `;
+      document.getElementById('answers').style.display = 'none';
+      document.getElementById('next-round-btn').style.display = 'none';
+    }
+
+    // Show coming soon message
+    function showComingSoon() {
+      playSound(clickSound);
+      alert("We are still raising funds for the other subjects to be unlocked. Please check back later!");
+    }
+
+    // Show donate info
+    function showDonateInfo() {
+      playSound(clickSound);
+      alert("To support the development of more quizzes, please donate to: 0713316977\n\nThank you for your support!");
+    }
+  </script>
+</body>
+</html>
